@@ -20,6 +20,7 @@ import java.util.UUID;
 public class EventConsumeService {
 
     private final Logger logger = LoggerFactory.getLogger(EventConsumeService.class);
+    private final Base64 base64Url = new Base64(true);
     private final ObjectMapper objectMapper;
     private final EventRepository repository;
 
@@ -31,13 +32,12 @@ public class EventConsumeService {
 
     @KafkaListener(topics = {"#{'${kafka.stream.topics}'.split(',')}"}, groupId = "${kafka.stream.groupId}")
     public void consume(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String  payload) throws JsonProcessingException {
-        Base64 base64Url = new Base64(true);
         String eventString = new String(base64Url.decode(payload));
         logger.info("Event String : " + eventString);
 
         Event event = objectMapper.readValue(eventString, Event.class);
-
         logger.info("Event Object : " + event);
+
         EventDB eventDB = new EventDB();
         eventDB.setClusterId(event.getClusterId());
         eventDB.setId(UUID.randomUUID().toString());
@@ -48,9 +48,7 @@ public class EventConsumeService {
         eventDB.setValue(event.getValue());
         eventDB.setType(event.getType());
         eventDB.isNew();
-        repository.save(eventDB).subscribe(savedEvent ->{
-            logger.info("Event Saved : " + savedEvent);
-        } );
+        repository.save(eventDB).subscribe(savedEvent -> logger.info("Event Saved : " + savedEvent));
 
     }
 }

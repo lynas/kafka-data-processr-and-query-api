@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class Converter {
+
     @Value("${app.time.pattern}")
     private String appTimePattern;
     @Value("${app.time.zone}")

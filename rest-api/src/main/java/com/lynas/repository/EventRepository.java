@@ -6,6 +6,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
 public interface EventRepository extends ReactiveCrudRepository<Event, String> {
+
     @Query("SELECT min(value) FROM event WHERE type like :type and cluster_id like :clusterId " +
             "and timestamp between :fromTime and :toTime")
     Mono<Double> findMin(String type, String clusterId, String fromTime, String toTime);
