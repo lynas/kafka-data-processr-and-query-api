@@ -31,22 +31,22 @@ public class EventConsumeService {
 
 
     @KafkaListener(topics = {"#{'${kafka.stream.topics}'.split(',')}"}, groupId = "${kafka.stream.groupId}")
-    public void consume(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic, @Payload String  payload) throws JsonProcessingException {
+    public void consume(@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                        @Payload String  payload) throws JsonProcessingException {
         String eventString = new String(base64Url.decode(payload));
-        logger.info("Event String : " + eventString);
-
+        logger.info("Event received : " + eventString);
         Event event = objectMapper.readValue(eventString, Event.class);
-        logger.info("Event Object : " + event);
 
-        EventDB eventDB = new EventDB();
-        eventDB.setClusterId(event.getClusterId());
-        eventDB.setId(UUID.randomUUID().toString());
-        eventDB.setEventId(event.getId());
-        eventDB.setInitialized(event.getInitialized());
-        eventDB.setName(event.getName());
-        eventDB.setTimestamp(event.getTimestamp().toInstant());
-        eventDB.setValue(event.getValue());
-        eventDB.setType(event.getType());
+        EventDB eventDB = new EventDB(
+                UUID.randomUUID().toString(),
+                event.getId(),
+                event.getType(),
+                event.getName(),
+                event.getClusterId(),
+                event.getTimestamp().toInstant(),
+                event.getValue(),
+                event.getInitialized()
+        );
         eventDB.isNew();
         repository.save(eventDB).subscribe(savedEvent -> logger.info("Event Saved : " + savedEvent));
 
