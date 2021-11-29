@@ -77,6 +77,11 @@ Content-Length: 17
 Response code: 200 (OK); Time: 728ms; Content length: 17 bytes
 ```
 
+- Added basic spring security in the `secured` branch of this repository
+- `https://github.com/lynas/kafka-data-processr-and-query-api/tree/secured`
+- Depending on client need a complex application security can be added with database or oAuth2 provider
+
+
 ## Limitation
 - A document databse or time series database may perform better if input dataset is very big
 - Can create docker image with gradle
