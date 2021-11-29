@@ -55,9 +55,11 @@ docker run -it relay42/rest-api
 
 ```
 
-GET http://localhost:8811/events/operation/min/fromTime/1637840755629/toTime/1637840775650
+curl --location --request GET 'http://localhost:8811/events/operation/min/fromTime/1637840755629/toTime/1637840775650' \
+--header 'Authorization: Basic dXNlcjp1c2Vy'
 
-GET http://localhost:8811/events/operation/min/fromTime/1637840755629/toTime/1637840775650?eventType=HUMIDITY&clusterId=1
+curl --location --request GET 'http://localhost:8811/events/operation/min/fromTime/1637840755629/toTime/1637840775650?eventType=HUMIDITY&clusterId=1' \
+--header 'Authorization: Basic dXNlcjp1c2Vy'
 
 ```
 
